@@ -1,0 +1,359 @@
+<!--
+    Yun Kim
+    Comp 484 Web Engineering
+    Prof. Adam Kaplan
+    Aug 1, 2014
+    Lab 3.html
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta charset="UTF-8">
+    <title>CSUN Map Quiz</title>
+    <!-- embedded javascript starts -->
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=geometry"></script>
+
+    <script>
+    var map;
+	var current_quiz;
+	var quiz_array = new Array(5);
+    var building_position;
+	var question_count = 0;
+    var correctCount = 0;
+    var buildingRect_array = new Array(21);
+
+    // array for building names
+    buildingRect_array = ["Jacaranda Hall", "Sequoia Hall","Oviatt Library", "Bayramian Hall", "Eucalyptus Hall","Live Oak Hall" ,"Sierra Hall",
+        "Citrus Hall","Book Store","Chaparral Hall", "University Student Union", "Student Recreation Center", "Redwood Hall", "Velley Performing Arts Center",
+        "Parking Structure G3", "Parking Lot G3","Cypress Hall","Nordhoff Hall","Jerome Richfield Hall", "Juniper Hall","Manzanita Hall"];
+
+    // Google Map API Starts here
+	function initialize() {
+        var mapoption = new google.maps.Map(document.getElementById('map-canvas'),
+                {
+                    zoom: 17,
+                    center: new google.maps.LatLng(34.239207, -118.527426),
+                    mapTypeId: google.maps.MapTypeId.SATELLITE,
+                    streetViewControl: false,
+                    draggable: false,
+                    zoomControl: false,
+                    scrollwheel: false,
+                    mapTypeControl: false,
+                    disableDoubleClickZoom: true,
+                    disableDefaultUI: true,
+                    panControl: false
+                });
+        map = new google.maps.Map(document.getElementById('map-canvas'), mapoption);
+        google.maps.event.addListener(map, 'dblclick', doubleclick);
+    }
+
+    // eventListner gets when user doubleclicked for the answer
+    function doubleclick(e) {
+        if (question_count < 5) {
+            // Juniper Hall and Manzanita Hall are Polygon, not rectangle. So they need special care.
+            // can't do with LatLngBounds.
+            if (current_quiz == 19 || current_quiz == 20)
+            {
+                if (current_quiz == 19)
+                {
+                    building_position = [
+                        new google.maps.LatLng(34.242119, -118.531089),
+                        new google.maps.LatLng(34.242349, -118.530842),
+                        new google.maps.LatLng(34.241675, -118.530027),
+                        new google.maps.LatLng(34.241480, -118.530273),
+                        new google.maps.LatLng(34.242119, -118.531089)
+                    ];
+                }
+
+                if (current_quiz == 20)
+                {
+                    building_position = [
+                        new google.maps.LatLng(34.236878, -118.530611),
+                        new google.maps.LatLng(34.236876, -118.530310),
+                        new google.maps.LatLng(34.237578, -118.530307),
+                        new google.maps.LatLng(34.237595, -118.529471),
+                        new google.maps.LatLng(34.237840, -118.529473),
+                        new google.maps.LatLng(34.237822, -118.530630),
+                        new google.maps.LatLng(34.236878, -118.530611)
+                    ];
+                }
+
+                var polypath = new google.maps.Polygon({paths: building_position});
+
+                // when user got correct answer, got message that says correct
+                // when user got wrong answer, got message that says wrong.
+                // those 2 messages are invisible originally.
+                // appears after the user's doubleclick event.
+                document.getElementById("result").style.display = "block";
+                if (google.maps.geometry.poly.containsLocation(e.latLng, polypath))
+                {
+                    addPolyright(building_position, map);
+                    document.getElementById("result").style.color = 'green';
+                    document.getElementById("result").innerHTML = 'You got the CORRECT answer! :)';
+                    correctCount++;
+                }
+                else
+                {
+                    addPolywrong(building_position, map);
+                    document.getElementById("result").style.color = 'red';
+                    document.getElementById("result").innerHTML = 'You got the WRONG answer! :(';
+                }
+            }
+
+            // other buildings coordinates (all rectangular shape)
+            else {
+                if (current_quiz == 0)
+                    building_position = new google.maps.LatLngBounds(new google.maps.LatLng(34.241038, -118.529473), new google.maps.LatLng(34.242059, -118.527863));
+                if (current_quiz == 1)
+                    building_position = new google.maps.LatLngBounds(new google.maps.LatLng(34.240178, -118.528378), new google.maps.LatLng(34.240769, -118.527636));
+                if (current_quiz == 2)
+                    building_position = new google.maps.LatLngBounds(new google.maps.LatLng(34.239649, -118.530017), new google.maps.LatLng(34.240384, -118.528607));
+                if (current_quiz == 3)
+                    building_position = new google.maps.LatLngBounds(new google.maps.LatLng(34.239961, -118.531345), new google.maps.LatLng(34.240655, -118.530146));
+                if (current_quiz == 4)
+                    building_position = new google.maps.LatLngBounds(new google.maps.LatLng(34.238555, -118.528782), new google.maps.LatLng(34.238765, -118.527679));
+                if (current_quiz == 5)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.238175, -118.528757), new google.maps.LatLng(34.238367, -118.527693));
+                if (current_quiz == 6)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.238128, -118.531364), new google.maps.LatLng(34.238438, -118.530045));
+                if (current_quiz == 7)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.238969, -118.528538), new google.maps.LatLng(34.239106, -118.527637));
+                if (current_quiz == 8)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.237075, -118.528667), new google.maps.LatLng(34.237727, -118.527744));
+                if (current_quiz == 9)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.237926, -118.527251), new google.maps.LatLng(34.238574, -118.526709));
+                if (current_quiz == 10)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.239816, -118.526596), new google.maps.LatLng(34.240401, -118.525282));
+                if (current_quiz == 11)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.239337, -118.525137), new google.maps.LatLng(34.240596, -118.524676));
+                if (current_quiz == 12)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.241294, -118.526949), new google.maps.LatLng(34.242564, -118.525359));
+                if (current_quiz == 13)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.235773, -118.528758), new google.maps.LatLng(34.236640, -118.527524));
+                if (current_quiz == 14)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.237586, -118.525542), new google.maps.LatLng(34.238580, -118.524727));
+                if (current_quiz == 15)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.237358, -118.524542), new google.maps.LatLng(34.238975, -118.523249));
+                if (current_quiz == 16)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.236025, -118.530070), new google.maps.LatLng(34.236664, -118.529308));
+                if (current_quiz == 17)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.236052, -118.530864), new google.maps.LatLng(34.236664, -118.530284));
+                if (current_quiz == 18)
+                    building_position =new google.maps.LatLngBounds(new google.maps.LatLng(34.238713, -118.531325), new google.maps.LatLng(34.239041, -118.530263));
+
+                // same thing as Polygon shape (message part)
+                document.getElementById("result").style.display = "block";
+                if (building_position.contains(e.latLng))
+                {
+                    addRectsright(building_position, map);
+                    document.getElementById("result").style.color = 'green';
+                    document.getElementById("result").innerHTML = 'You got the CORRECT answer! :)';
+                    correctCount++;
+                }
+                else
+                {
+                    addRectswrong(building_position, map);
+                    document.getElementById("result").style.color = 'red';
+                    document.getElementById("result").innerHTML = 'You got the WRONG answer! :(';
+                }
+            }
+
+
+            // check if the user answer 5 quiestion,
+            // if not, next question should appear 1500ms after user doubleclick for answer,
+            // if yes, calls the final_result function that shows final result of the score
+            if (question_count >= 4){
+                question_count++;
+                setTimeout(question, 1500);
+                setTimeout(function(){document.getElementById("result").style.display = "none";}, 1500);
+                setTimeout(fianl_result,1500);
+
+            } else{
+                question_count++;
+                setTimeout(function(){document.getElementById("result").style.display = "none";}, 1500);
+                setTimeout(question, 1500);
+            }
+        }
+    }
+
+    // JQuery animation for final score
+    function fianl_result(){
+        $("#total").html("You scored " + correctCount + " out of a possible 5 correct!");
+        $("#total").animate({left: "+=18%"}, "slow");
+    }
+
+    // draw rectangle for right answer (green)
+    function addRectsright(bounds, map) {
+        var overlayRec = new google.maps.Rectangle({
+            map: map,
+            bounds: bounds,
+            fillColor: "green",
+            fillOpacity: 0.4,
+            strokeColor: "green",
+            strokeWeight: 4,
+            strokeOpacity: 1
+        });
+    }
+
+    // draw rectangle for wrong answer (red)
+    function addRectswrong(bounds, map) {
+        var overlayRec = new google.maps.Rectangle({
+            map: map,
+            bounds: bounds,
+            fillColor: "red",
+            fillOpacity: 0.4,
+            strokeColor: "red",
+            strokeWeight: 2,
+            strokeOpacity: 1
+        });
+    }
+
+    // draw polygon for right answer (green)
+    function addPolyright(bounds, map) {
+        var overlayPoly = new google.maps.Polygon({
+            paths: bounds,
+            map: map,
+            bounds: bounds,
+            fillColor: "green",
+            fillOpacity: 0.4,
+            strokeColor: "green",
+            strokeWeight: 3,
+            strokeOpacity: 1
+        })
+    }
+
+    // draw polygon for wrong answer (red)
+    function addPolywrong(bounds, map) {
+        var overlayPoly = new google.maps.Polygon({
+            paths: bounds,
+            map: map,
+            bounds: bounds,
+            fillColor: "red",
+            fillOpacity: 0.4,
+            strokeColor: "red",
+            strokeWeight: 3,
+            strokeOpacity: 1
+        })
+    }
+
+    // shows the question randomly.
+    function question() {
+        if (question_count < 5) {
+            while (current_quiz == quiz_array[0] || current_quiz == quiz_array[1] ||
+                    current_quiz == quiz_array[2] || current_quiz == quiz_array[3] ||
+                    current_quiz == quiz_array[4]) {
+                current_quiz = Math.floor((Math.random() * 21));
+            }
+
+            quiz_array[question_count] = current_quiz;
+            document.getElementById("question_num").innerHTML = ("Question #" + (question_count + 1) + ". Where is " + buildingRect_array[current_quiz] + "?");
+        }
+
+        else {
+            document.getElementById("question_num").innerHTML = "You solved 5 questions! Refresh the page to play!";
+        }
+    }
+    google.maps.event.addDomListener(window, 'load', initialize);
+    </script>
+    <!-- embedded javascript done -->
+
+    <!-- embedded CSS starts -->
+    <style TYPE="text/css">
+    body {
+        font-family: Tahoma, Geneva, sans-serif;
+    }
+
+    #title {
+        border: 3px solid black;
+        margin: auto;
+        text-align: center;
+        font-size: 35px;
+        font-weight: bold;
+        padding: 5px 0px 7px;
+    }
+
+    #map-canvas {
+        width: 800px;
+        height: 800px;
+        margin: auto;
+        margin-top: 20px;
+        padding: 0px;
+        border: 3px solid black;
+        box-shadow: 0 0 50px #338f99;
+        border-radius:8px;
+    }
+
+    .questions {
+        margin: auto;
+        width: 100%;
+        text-align: center;
+        margin-top: 10px;
+        font-size: 25px;
+        font-weight: bold;
+        padding-top: 5px;
+        padding-bottom: 7px;
+        line-height: 50%;
+    }
+	
+	.hide {	display: none;}
+	
+	#result {
+        margin: auto;
+        margin-bottom: 10px;
+        width:100%;
+		font-size: 25px;
+		font-weight: bold;
+        text-align: center;
+		padding: 0px;
+		margin-top: 0px;
+	}
+
+    .total_result {
+        margin: auto;
+        position: relative;
+        width: 70%;
+        font-size: 30px;
+        font-weight: bold;
+        padding: 0px;
+        color: #6d97ae;
+    }
+		
+	.made2 {
+		font-size: 15px;
+		font-weight: bold;
+		text-align: right;
+		margin-right: 150px;
+		padding: 0px;
+		margin-top: 10px;
+		margin-bottom: 0px;
+	}
+	
+	.made {
+		font-size: 15px;
+		font-weight: bold;
+		text-align: right;
+		margin-right: 150px;
+		padding: 0px;
+		margin-top: 0px;
+		margin-bottom: 0px;
+		
+	}
+    </style>
+    <!-- embedded CSS done -->
+</head>
+
+<body onload = question();>
+    <p id = "title">Welcome to <font color="red">CSUN</font> Campus Map Quiz </p>
+    <div class = "questions" id = "question_num"></div>
+    <div class = "total_result" id = "total"></div>
+    <div class = "hide" id = "result"></div>
+    <div id="map-canvas"></div>
+	<p class = "made2"> Made By Yun Kim </p>
+	<p class = "made"> Comp 484 Web Engineering / Lab3.html </p>
+	<p class = "made"> Dr. Adam Kaplan </p>
+	
+</body>
+</html>

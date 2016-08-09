@@ -1,0 +1,553 @@
+<!--
+    Yun Kim
+    Comp 484 Web Engineering
+    Prof. Adam Kaplan
+    July 22, 2014
+    Lab 2.html
+-->
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Registration / Calculator</title>
+
+    <!-- embedded javascript starts -->
+    <script type = "text/javascript">
+        // call validate_form when user clicked submit button. It checks valid input for registration form
+        // if user typed properly, the alert pops up and show all the info that user put
+        // if user typed wrong, the background color changes to red.
+        function validate_form() {
+            document.getElementById("invalid1").style.display = "none";
+            document.getElementById("invalid2").style.display = "none";
+            document.getElementById("invalid2_2").style.display = "none";
+            document.getElementById("invalid3").style.display = "none";
+            document.getElementById("invalid3_2").style.display = "none";
+            document.getElementById("invalid4_3").style.display = "none";
+            document.getElementById("invalid4_2").style.display = "none";
+            document.getElementById("invalid4").style.display = "none";
+            document.getElementById("invalid5").style.display = "none";
+            document.getElementById("invalid5_2").style.display = "none";
+
+            var first = document.register.firstname.value;
+            var last = document.register.lastname.value;
+            var schoolid = document.register.id.value;
+            var biography = document.register.bio.value;
+            var countbio = wordcount(biography);
+
+            if (first == "" || last == "" || schoolid == "" || first[0].toUpperCase() != first[0] || last[0].toUpperCase() != last[0] || (schoolid == "") || isNaN(schoolid) || (getlength(schoolid) != 9) || (countbio > 25) || (biography == "")) {
+                var div = document.getElementById('outsidebox');
+                var div2 = document.getElementById('calculator');
+                div.style.backgroundColor = "red";
+                div2.style.backgroundColor = "red";
+
+                document.getElementById("invalid1").style.display = "block";
+
+                if (first == ""){document.getElementById("invalid2").style.display = "block";}
+                else if (first[0].toUpperCase() != first[0]){document.getElementById("invalid2_2").style.display = "block";}
+
+                if (last == ""){document.getElementById("invalid3").style.display = "block";}
+                else if (last[0].toUpperCase() != last[0]){document.getElementById("invalid3_2").style.display = "block"; }
+
+                if (schoolid == ""){document.getElementById("invalid4_3").style.display = "block";}
+                else if (isNaN(schoolid)){document.getElementById("invalid4_2").style.display = "block";}
+                else if (getlength(schoolid) != 9 ){document.getElementById("invalid4").style.display = "block";}
+
+                if (countbio > 25) {document.getElementById("invalid5").style.display = "block";}
+                else if (biography == "") {document.getElementById("invalid5_2").style.display = "block";}
+                return false;
+            }
+
+            else {
+
+                if (isNaN(document.register.d.value))
+                {   result = "ERROR";}
+                alert('~~~Successfully Submitted~~~\n\nFirst Name: ' + first + '\nLast Name: ' + last + '\nSchool ID #: ' + schoolid + '\nBiography: \n' +biography +  '\nCalculated Result: ' + result + '\nHours Worked This Week: ' + totalhour + ' hours');
+                Clear();
+                return true;
+            }
+        }
+
+        // function for count the number of words in biography
+        function wordcount(count) {
+            var cnt;
+            var words = count.split(/\s/);
+            cnt = words.length;
+            return cnt;
+        }
+
+        // get school id's number of digits
+        function getlength(schoolid) {
+            return schoolid.toString().length;
+        }
+
+        // variable for calculator
+        var memory = "0";
+        var current = "0";
+        var operation = 0;
+        var max_length = 30;
+        var result = "0";
+        var totalhour = 0;
+        var change;
+
+        // function for when the user click the number button
+        function displaynum(num)
+        {
+            if (current.length > max_length) current = "Too long, 30 digits only";
+            else {
+                if (eval(current) == 0) current = num;
+                else current = current + num;
+            }
+            document.register.d.value = current;
+            clearInterval(change);
+            var normal = document.getElementById('work');
+            normal.style.color = "black";
+            document.getElementById("work").innerHTML = 'Hours Worked This Week: ' + totalhour + ' hours';
+        }
+
+        // function for when the user types on calculator's display
+        function validation()
+        {
+            current = "0";
+            operation = 0;
+            memory = "0";
+            var typecurrent = document.register.d.value;
+            if(isNaN(typecurrent)){
+                document.getElementById("d").value = "ERROR: press C";
+                setTimeout(validation, 10);
+            }
+            else {
+                current = typecurrent;
+            }
+        }
+
+        // function for when the user clicks Clear button
+        function Clear()
+        {
+            current = "0";
+            operation = 0;
+            memory = "0";
+            totalhour = 0;
+            var invalid = document.getElementById('work');
+            invalid.style.color = "black";
+            var div = document.getElementById('outsidebox');
+            var div2 = document.getElementById('calculator');
+            div.style.backgroundColor = "#d4ffec";
+            div2.style.backgroundColor = "#d4ffec";
+            document.register.d.value = current;
+            document.getElementById("work").innerHTML = 'Hours Worked This Week: ' + totalhour + ' hours';
+            document.getElementById("invalid1").style.display = "none";
+            document.getElementById("invalid2").style.display = "none";
+            document.getElementById("invalid2_2").style.display = "none";
+            document.getElementById("invalid3").style.display = "none";
+            document.getElementById("invalid3_2").style.display = "none";
+            document.getElementById("invalid4_3").style.display = "none";
+            document.getElementById("invalid4_2").style.display = "none";
+            document.getElementById("invalid4").style.display = "none";
+            document.getElementById("invalid5").style.display = "none";
+            document.getElementById("invalid5_2").style.display = "none";
+            clearInterval(change);
+        }
+
+        // function for when the user clicks C button on calculator
+        function Clearcurrent()
+        {
+            current = "0";
+            operation = 0;
+            memory = "0";
+            document.register.d.value = current;
+        }
+
+        // function for when the user clicks Save button.
+        function Clearsave(){
+            current = "0";
+            operation = 0;
+            memory = "0";
+            totalhour = 0;
+            result = "0";
+            document.register.d.value = current;
+        }
+
+        // function for assign the value to operation button
+        function operate(op)
+        {
+            if (op.indexOf("+") > -1) {
+                operation = 1;
+            }
+            if (op.indexOf("-") > -1) {
+                operation = 2;
+            }
+            if (op.indexOf("x") > -1) {
+                operation = 3;
+            }
+            if (op.indexOf("÷") > -1) {
+                operation = 4;
+            }
+            memory = current;
+            current = "";
+            document.register.d.value = current;
+            document.register.d.value = op;
+        }
+
+        // function for after assign the value to operation button, using assigned value, do proper calculation.
+        function calcualate()
+        {
+            if (operation == 1) {result = eval(memory) + eval(current);}
+            if (operation == 2) {result = eval(memory) - eval(current);}
+            if (operation == 3) {result = eval(memory) * eval(current);}
+            if (operation == 4) {result = eval(memory) / eval(current);}
+            operation = 0;
+            memory = "0";
+            document.register.d.value = result;
+            current = "0";
+        }
+
+        // function for invalid values in calculator. It changes the font color.
+        function invalid_colorChange(){
+            var colorchange = document.getElementById('work');
+            var arr = ["#FF0000", "#FF5E00", "#FFBB00", "#FFE400", "#ABF200", "#1DDB16", "#00D8FF", "#0054FF", "#0100FF", "#D1B2FF", "#5F00FF", "#FF00DD", "#FF007F"];
+            var cur = new Date();
+            var idx = cur.getSeconds()%arr.length;
+            colorchange.style.color = arr[idx];
+        }
+
+        // function for when user clicks Save button. checks validation for "Hours worked".
+        // if the value on calculation display is not valid, show the error message and call "invalid_colorChange"
+        // and every 0.8 seconds, it changes color.
+        function Span()
+        {
+            if (result < 0 || document.register.d.value == "" || isNaN(document.register.d.value))
+            {
+                if (result < 0){
+                    document.getElementById("work").innerHTML = '!!!~Result should be non-negative number to save~!!!';
+                }
+
+                if (document.register.d.value == ""){
+                    document.getElementById("work").innerHTML = '!!~The result is empty, there is no value to save~!!';
+                }
+
+                if (isNaN(document.register.d.value)){
+                    document.getElementById("work").innerHTML = '!!!!!!!~Letters cannot be used for Calculator~!!!!!!';
+                }
+                change = setInterval("invalid_colorChange()", 800);
+                Clearsave();
+            }
+
+            else if (!isNaN(document.register.d.value))
+            {
+                totalhour += result;
+                document.getElementById("work").innerHTML = 'Hours Worked This Week: ' + totalhour + ' hours';
+                document.register.d.value = result;
+            }
+        }
+    </script>
+    <!-- embedded javascript done -->
+
+    <!-- embedded CSS starts -->
+    <style TYPE="text/css">
+        *{
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Tahoma, Geneva, sans-serif;
+        }
+
+        #outsidebox {
+            width: 550px;
+            height: auto;
+            margin: 30px auto auto;
+            background: #d4ffec;
+            box-shadow: 0 0 30px #2d7699;
+            border-radius:8px;
+        }
+
+        #boxbody {
+            padding: 20px 20px 5px 20px;
+        }
+
+        .form_title{
+            font-size: 35px;
+            text-decoration: underline;
+            color: #547099;
+            text-align: center;
+            padding: 20px 20px 0;
+            font-weight: bold;
+            line-height: 20%
+        }
+
+        .sub_title{
+            font-size: 19px;
+            color: #3c9699;
+            text-align: center;
+            font-weight: normal;
+        }
+
+        .firstnameorlastname{
+            margin-right: 10px;
+            margin-left: 10px;
+            padding: 5px 0 5px;
+        }
+
+        .inputname{
+            position: relative;
+            width:242px;
+            padding: 7px;
+            font-size: 18px;
+            border-radius:8px;
+            border: none;
+        }
+
+        #school_id {
+            padding: 5px 0;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        .inputID {
+            width: 490px;
+            font-size: 18px;
+            padding: 7px;
+            border-radius:8px;
+            border: none;
+        }
+
+        #bio {
+            padding: 5px 0 5px;
+            margin-right: 10px;
+            margin-left: 10px;
+        }
+
+        .biography{
+            width: 490px;
+            height: 150px;
+            font-size: 18px;
+            padding: 7px;
+            border-radius:8px;
+            border: none;
+        }
+
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font: bold 20px Arial, sans-serif;
+        }
+
+        #calculator {
+            background-color: #d4ffec;
+            width: 500px;
+            height: 280px;
+            margin: 0 auto 5px;
+            padding: 9px 15px;
+        }
+
+        .display {
+            background-color: #3546ff;
+            width: 450px;
+            height: 50px;
+            position: relative;
+            margin: 10px 10px 0 9px;
+            border-radius:8px;
+        }
+
+        .display input {
+            position: relative;
+            width:444px;
+            left: 3px;
+            top: 3px;
+            height: 44px;
+            color: black;
+            background-color: #a0dbff;
+            font-size: 25px;
+            text-align: right;
+            border-radius:8px;
+        }
+
+        .keys {
+            position: relative;
+            top: 10px;
+        }
+
+        .c_button {
+            color: white;
+            background-color: #ff8cb9;
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius:8px;
+            margin-left:6px;
+            margin-right: 6px;
+            cursor:pointer;
+            border-top:2px solid transparent;
+        }
+
+        .number {
+            color: black;
+            background-color: white;
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius:8px;
+            margin-left:6px;
+            margin-right: 6px;
+            cursor:pointer;
+            border-top:2px solid transparent;
+            top: 15px;
+        }
+
+        .operator {
+            color: white;
+            background-color: #4d7fff;
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius:8px;
+            margin-left:6px;
+            margin-right: 6px;
+            cursor:pointer;
+            border-top:2px solid transparent;
+            top: 15px;
+        }
+
+        .equal {
+            color: black;
+            background-color: #f2ff50;
+            width: 100px;
+            height: 40px;
+            border: none;
+            border-radius:8px;
+            margin-left:6px;
+            margin-right: 6px;
+            cursor:pointer;
+            border-top:2px solid transparent;
+            top: 15px;
+        }
+
+        #submitandsave{
+            margin-right: 10px;
+            margin-left: 10px;
+            padding: 5px 0 5px;
+        }
+
+        .subsave {
+            color: white;
+            background-color: #e663ff;
+            width: 172px;
+            height: 40px;
+            border: none;
+            border-radius:8px;
+            cursor:pointer;
+            border-top:2px solid transparent;
+            top: 15px;
+        }
+
+        .number:hover {background-color: #b29cff; color: white;}
+        .c_button:hover {background-color: deeppink;}
+        .equal:hover {background-color: #53c2a6; color: white;}
+        .operator:hover {background-color: #93ff81; color: black;}
+        .subsave:hover {background-color: #f6c5ff; color: black;}
+        p {line-height : 50px;}
+
+        #invalid1 {
+            color: white;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            line-height: 40%;
+            font-size: 24px;
+            text-align: center;
+        }
+
+         #invalid2, #invalid2_2, #invalid3, #invalid3_2, #invalid4, #invalid4_2, #invalid4_3, #invalid5, #invalid5_2 {
+            color: white;
+            padding-left: 30px;
+            padding-bottom: 20px;
+            line-height: 40%;
+        }
+
+        .hide {display: none;}
+
+     </style>
+</head>
+
+    <body>
+        <form name="register" action="" onsubmit="return validate_form();" method="post">
+            <div id = "outsidebox">
+                <div id = "boxbody">
+                    <div>
+                        <h2 class = "form_title"> Registration Form</h2>
+                        <p class = "sub_title"> basic form validation and event handling in Javascript</p>
+                    </div>
+                    <div>
+                        <div class = "firstnameorlastname">
+                            <input type = "text" name = "firstname" value = "" placeholder="First Name" class = "inputname">
+                            <input type = "text" name = "lastname" value = "" placeholder="Last Name" class = "inputname">
+                        </div>
+
+                        <div id = "school_id">
+                            <input type = "text" name = "id" value = ""  placeholder="School ID Number" class = "inputID">
+                        </div>
+
+                        <div id = "bio">
+                            <textarea placeholder = "Biography" id = "biography" name = "bio" rows = "4" cols = "50" class = "biography"></textarea>
+                        </div>
+                     </div>
+                </div>
+
+                <div id = "calculator">
+                    <div class ="display">
+                        <label for="d"></label><input type = "text" maxlength = "30" id = "d" size = "30" name = "d" onblur = validation()>
+                    </div>
+
+                    <div class = "keys">
+                        <p>
+                            <input type = "button" class = "number" value = "7" onclick =  displaynum('7')>
+                            <input type = "button" class = "number" value = "8" onclick =  displaynum('8')>
+                            <input type = "button" class = "number" value = "9" onclick =  displaynum('9')>
+                            <input type = "button" class = "operator" value = "+" onclick = operate('+')>
+                        </p>
+                        <p>
+                            <input type = "button" class = "number" value = "4" onclick =  displaynum('4')>
+                            <input type = "button" class = "number" value = "5" onclick =  displaynum('5')>
+                            <input type = "button" class = "number" value = "6" onclick =  displaynum('6')>
+                            <input type = "button" class = "operator" value = "-" onclick = operate('-')>
+                        </p>
+                        <p>
+                            <input type = "button" class = "number" value = "1" onclick =  displaynum('1')>
+                            <input type = "button" class = "number" value = "2" onclick =  displaynum('2')>
+                            <input type = "button" class = "number" value = "3" onclick =  displaynum('3')>
+                            <input type = "button" class = "operator" value = "x" onclick = operate('x')>
+                        </p>
+
+                        <p>
+                            <input type = "button" class = "c_button" value = "C" onclick = Clearcurrent()>
+                            <input type = "button" class = "number" value = "0" onclick =  displaynum('0')>
+                            <input type = "button" class = "equal" value = "=" onclick = calcualate()>
+                            <input type = "button" class = "operator" value = "÷" onclick = operate('÷')>
+                        </p>
+                    </div>
+                </div>
+
+                <div id = "submitandsave">
+                    <span id = "work"> Hours Worked This Week: 0 hours</span>
+                    <p>
+                        <input type = "button" value = "Save" class = "subsave" onclick = Span()>
+                        <input type = "submit" value = "Submit" class = "subsave" >
+                        <input type = "reset" id = "clear" value = "Clear" class = "subsave" onclick = Clear()>
+                    </p>
+                </div>
+                <p class = "hide" id = "invalid1">~~~***Reason for Invalid Registration***~~~</p>
+                <p class = "hide" id = "invalid2">First name: Must be non-empty</p>
+                <p class = "hide" id = "invalid2_2">First name: First letter is not capitalized</p>
+                <p class = "hide" id = "invalid3">Last name: Must be non-empty</p>
+                <p class = "hide" id = "invalid3_2">Last name: First letter is not capitalized</p>
+                <p class = "hide" id = "invalid4">School ID: Must be 9 digits</p>
+                <p class = "hide" id = "invalid4_2">School ID: Must be only numbers</p>
+                <p class = "hide" id = "invalid4_3">School ID: Must be non-empty</p>
+                <p class = "hide" id = "invalid5">Biography: Must be less than 25 words</p>
+                <p class = "hide" id = "invalid5_2">Biography: Must be non-empty</p>
+            </div>
+        </form>
+    </body>
+</html>

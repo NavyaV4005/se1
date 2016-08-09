@@ -1,0 +1,99 @@
+/* 	Yun Kim
+	Lab1.css
+	Jun 30. 2014
+	Comp. 484
+
+I know the blog div should be yellow but if I hover on there, it is already yellow so
+I didn't see any difference between that. So I just change my default color for blog div to see easily.*/
+
+*:not(html):not(body):hover	{background-color: yellow}
+
+#wrapper0 {
+	width: auto;
+	margin-top: 1em;	
+	margin-left: auto;
+	margin-right: auto;
+	border: 3px solid black;
+	background: #074968;
+}
+
+#wrapper {
+	width: auto;
+	margin: .3em 1em .3em 1em ;	
+	border: 3px solid black;
+	background: white;
+}
+
+div.header {
+	margin: auto;
+	background: lightblue;
+	border: 2px solid black;
+	text-align: right;
+}
+
+div.header h1 {
+	margin-right: 20px;
+	font-family: sans-serif;
+	text-align: right;
+	margin-bottom: 0px;
+	font-weight: 500;
+}
+
+div.header h2 {
+	margin-right: 20px;
+	margin-top: 0px;
+	font-family: sans-serif;
+	font-size: 1.2em;
+	text-align: right;
+	font-weight: 200;
+}
+
+div.friends {
+	background: purple;
+	border: 10px solid black;
+	width: 175px;
+	color: white;
+	font-family: serif;
+}
+
+div.friends h1 {
+	margin-left: .3em;
+	margin-top: .4em;
+	font-family: sans-serif;
+	font-weight: 100;
+	line-height: 60%
+}
+
+div.blog {
+	background: #8ff6a9;
+	border: 6px solid black;
+	margin-bottom: .5em;
+}
+
+div.blog h2 {
+	font-weight: 400;
+	font-family: sans-serif;
+	margin-bottom: 0px;
+	margin-top: 10px;
+	margin-left: 10px;
+}
+
+div.blog h5{
+	font-weight: 300;
+	text-align: justify;
+	margin-top: 0px;
+	margin-bottom: 10px;
+	margin-left: 10px;
+}
+
+a {
+	text-decoration: none;
+	color: white;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: blue;
+}
+
+

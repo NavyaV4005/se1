@@ -1,0 +1,22 @@
+?Description of all files
+	? cron.php
+		Do the cron job after user makes schedule.
+		show if there were schedule that has been sent or not.
+		show schedules that will going to send in the future.
+	? logout.php
+		if user clicks logout button, it goes back to sign in page.
+	? mailer.php
+		if user clicks create schedule button, it validate all the input for schedule
+		if validation false, show message to why it didn¡¯t go through
+		if validation true, insert data into message table in mysql database
+	? register.php
+		user can make username for log in.
+		check if there is same username (if there is same one, show error message)
+		tried to do b) extra credit, at least one number, one letter, and one special character.
+		if user typed valid username, insert data into user_tb in mysql database
+	? signin.php
+		user can sign in.
+		if username and password are not matching with mysql database, show error message
+		if username and password are matching with mysql database, show scheduler tool to create schedule.
+
+?The project completed 100%.
